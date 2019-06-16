@@ -1,0 +1,7 @@
+<toolbox>
+    <tool>
+        <key>date</key>  <!-- 定义了一个date对象，实例化了一个 org.apache.velocity.tools.generic.DateTool类-->
+        <scope>application</scope>
+        <class>org.apache.velocity.tools.generic.DateTool</class>
+    </tool>
+</toolbox>
