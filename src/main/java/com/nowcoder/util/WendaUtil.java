@@ -1,5 +1,6 @@
 package com.nowcoder.util;
 
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,11 +13,29 @@ import java.util.Map;
 public class WendaUtil {
     private static final Logger logger = LoggerFactory.getLogger(WendaUtil.class);
 
+    public static  int ANONYMOUS_USERID=3;
+
+
     /**
-     * 将字符串用MD5算法加密
-     * @param key
-     * @return
+     *  封装一个生成 Json串的工具。默认情况是没有“msg”的
      */
+    public static String getJSONString(int code){
+        JSONObject json=new JSONObject();
+        json.put("code",code);  //像map一样，put进去即可
+        return json.toJSONString();//json对象 直接转换成了string
+    }
+
+    /**
+     *  封装一个生成 Json串的工具
+     */
+    public static String getJSONString(int code,String msg){
+        JSONObject json=new JSONObject();
+        json.put("code",code);  //像map一样，put进去即可
+        json.put("msg",msg);
+        return json.toJSONString();//json对象 直接转换成了string
+    }
+
+    /* 将字符串用MD5算法加密 */
     public static String MD5(String key) {
         char hexDigits[] = {
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
