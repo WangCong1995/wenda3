@@ -37,7 +37,7 @@
                             <input type="password" name="password" aria-label="密码" placeholder="密码" required="">
                         </div>
                     </div>
-                    <input type="hidden" name="next" value="$!{next}"/>
+                    <input type="hidden" name="next" value="$!{next}"/> <!-- 在这个form里面，埋了一个待访问页面的参数-->
                     <div class="button-wrapper command clearfix">
                         <button class="sign-button submit" type="submit" onclick="form=document.getElementById('regloginform');form.action='/login/'">登录</button>   ##点了登录，就要把表单 提交到登录的请求
                         <button class="sign-button submit" type="submit" onclick="form=document.getElementById('regloginform');form.action='/reg/'">注册</button>     ##点了注册，就将表单 提交到注册的请求

@@ -125,4 +125,8 @@ public class UserService {
         return userDAO.selectById(id);
     }//查询用户的接口
 
+    public void logout(String ticket) {
+        loginTicketDAO.updateStatus(ticket, 1);//让ticket失效，把它的状态改成1
+    }
+
 }
