@@ -17,6 +17,9 @@ public class QuestionService {
     @Autowired
     QuestionDAO questionDAO;
 
+    @Autowired
+    SensitiveService sensitiveService;
+
     public int addQuestion(Question question) {
         questionDAO.addQuestion(question);//如果提交成功会返回大于零
 
@@ -24,7 +27,9 @@ public class QuestionService {
         question.setContent(HtmlUtils.htmlEscape(question.getContent()));//先把title和content中的HTML标签，在入数据库之前就给过滤掉。它只是把标签给转义了，而不是删除
         question.setTitle(HtmlUtils.htmlEscape(question.getTitle()));//对title也要进行过滤
 
-        /*敏感词过滤，利用字典树（前缀树）*/
+        /*敏感词过滤。利用字典树（前缀树）*/
+        question.setTitle(sensitiveService.filter(question.getTitle()));
+        question.setContent(sensitiveService.filter(question.getContent()));
 
         return questionDAO.addQuestion(question) > 0 ? question.getId() : 0;
     }

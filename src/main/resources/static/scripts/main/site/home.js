@@ -18,7 +18,7 @@
         var that = this;
         PopupAdd.show({
             ok: function () {
-                window.location.replace("/");   //在首页会做一个监听。如果“ok”，则当前页面刷新到首页
+                window.location.replace("/");
             }
         });
     }

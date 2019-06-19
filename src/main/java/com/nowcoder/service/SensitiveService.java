@@ -1,6 +1,7 @@
 package com.nowcoder.service;
 
 import com.nowcoder.controller.IndexController;
+import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,24 @@ public class SensitiveService implements InitializingBean {
 
     }
 
+
+    /**
+     * 【函数功能：判断是否是符号，即 是否是非法的字符？】
+     * 判断是不是非英文，非数字，非中文的一些东西。因为他们可能使用“色  情”、“*色*情*”、颜文字，来迷惑过滤器
+     * @param c
+     * @return
+     */
+    private  boolean isSymbol(char c){
+        int ic=(int) c;
+
+        //如果字符c不是英文字符，并且字符c不是东亚文字。则他们是非法的字符，返回true。
+        return !CharUtils.isAsciiAlphanumeric(c) && (ic < 0x2E80 || ic > 0x9FFF);   //[0x2E80,0x9FFF]表示东亚文字。
+
+    }
+
+
+
+
     /**
      * 【敏感词过滤】
      *
@@ -105,6 +124,18 @@ public class SensitiveService implements InitializingBean {
             /*每次的position就去问，根结点的子节点中，有没有与之匹配的*/
 
             char c=text.charAt(position);   //把当前的字符取出来
+
+            if(isSymbol(c)){    //如果是c非法字符，直接把他过滤掉，直接跳过这个字符
+                if(tempNode==rootNode){ //如果刚开始判断，你又有这些空格“ ” ，那我将它放在resul里面，以免丢失了
+                    result.append(c);
+                    ++begin;
+                }
+
+
+                //在跳过之前，将 position往后移
+                ++position;
+                continue;
+            }
 
             tempNode=tempNode.getSubNode(c);    //把当前根结点的子节点中，有没有与当前字符c匹配的
 
@@ -131,7 +162,7 @@ public class SensitiveService implements InitializingBean {
             }
         }
 
-        // 最终结果，走完了以后，result还要append最后一串。把最后一次处理的加上。
+        // 最终结果，走完了以后，result还要append最后一串。把最后一次处理的加上。比如文件尾有"ab",有关键词“abc”，最后一段在匹配时，匹配到了“ab”，但想去匹配“c”的时候，循环已经这结束了，所以这一段要单独添加到result中。
         //最后一段的时候，position到达了文件尾，while循环立即结束。但begin开头的字符串，既没有匹配上敏感词，也没有加入result。所以，我们需要把 最后的 begin位置开头的字符串，添加到结果中。
         result.append(text.substring(begin));
         return result.toString();
@@ -169,5 +200,14 @@ public class SensitiveService implements InitializingBean {
             this.end = end;
         }
     }
+
+    public static void main(String[] argv){
+        SensitiveService s=new SensitiveService();
+        s.addWord("色情");
+        s.addWord("赌博");
+        System.out.println(s.filter("   你爱★色★情★和★赌★博★啊"));
+    }
+
+
 
 }

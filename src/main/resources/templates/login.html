@@ -18,7 +18,7 @@
         <div class="index-header">
             <h1 class="logo hide-text"><img src="../images/res/nk.png" alt=""></h1>
             <h2 class="subtitle">
-                #if($msg)  ##如果有msg的话，优先显示msg。否则显示默认的
+                #if($msg)
                 $!{msg}
                 #else
                 与世界分享你的知识、经验和见解
@@ -27,7 +27,7 @@
         </div>
         <div class="desk-front sign-flow clearfix sign-flow-simple">
             <div class="view view-signin" data-za-module="SignInForm" style="display: block;">
-                <form action="/reg/" id="regloginform" method="post">  ##这个表单现在要被“登录”和“注册”两个功能使用，所以我要写成一个可以互相区别用的，所以要在表单里面加一个id="regloginform"
+                <form action="/reg/" id="regloginform" method="post">
                     <input type="hidden" name="_xsrf" value="21aa1c8d254df2899b23ab9afbd62a53">
                     <div class="group-inputs">
                         <div class="email input-wrapper">
@@ -37,10 +37,10 @@
                             <input type="password" name="password" aria-label="密码" placeholder="密码" required="">
                         </div>
                     </div>
-                    <input type="hidden" name="next" value="$!{next}"/> <!-- 在这个form里面，埋了一个待访问页面的参数-->
+                    <input type="hidden" name="next" value="$!{next}"/>
                     <div class="button-wrapper command clearfix">
-                        <button class="sign-button submit" type="submit" onclick="form=document.getElementById('regloginform');form.action='/login/'">登录</button>   ##点了登录，就要把表单 提交到登录的请求
-                        <button class="sign-button submit" type="submit" onclick="form=document.getElementById('regloginform');form.action='/reg/'">注册</button>     ##点了注册，就将表单 提交到注册的请求
+                        <button class="sign-button submit" type="submit" onclick="form=document.getElementById('regloginform');form.action='/login/'">登录</button>
+                        <button class="sign-button submit" type="submit" onclick="form=document.getElementById('regloginform');form.action='/reg/'">注册</button>
                     </div>
                     <div class="signin-misc-wrapper clearfix">
                         <label class="remember-me">

@@ -5,7 +5,7 @@ var oPopupAdd = new PopupAdd({
 });
  */
 (function (window) {
-    var PopupAdd = Base.createClass('main.component.PopupAdd');     //弹窗
+    var PopupAdd = Base.createClass('main.component.PopupAdd');
     var Popup = Base.getClass('main.component.Popup');
     var Component = Base.getClass('main.component.Component');
     var Util = Base.getClass('main.base.Util');
@@ -73,20 +73,20 @@ var oPopupAdd = new PopupAdd({
                 bSubmit = true;
                 // 提交内容
                 $.ajax({
-                    url: '/question/add',  //请求地址
-                    type: 'post',       //提交
+                    url: '/question/add',
+                    type: 'post',
                     data: oData,
                     dataType: 'json'
                 }).done(function (oResult) {
                     // 未登陆，跳转到登陆页面
-                    if (oResult.code === 999) {     //如果code=999，它就跳转到登录页面
+                    if (oResult.code === 999) {
                         window.location.href = '/reglogin?next=' + window.encodeURIComponent(window.location.href);
                     } else {
                         oConf.ok && oConf.ok.call(that);
-                        oAdd.emit('ok');    //否则它就发一个“ok”的事件。与 home.js 关联起来
+                        oAdd.emit('ok');
                     }
                 }).fail(function () {
-                    alert('出现错误，请重试');  //不然alert()一个报错
+                    alert('出现错误，请重试');
                 }).always(function () {
                     bSubmit = false;
                 });
