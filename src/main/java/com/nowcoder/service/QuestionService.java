@@ -20,6 +20,11 @@ public class QuestionService {
     @Autowired
     SensitiveService sensitiveService;
 
+    public Question selectById(int id){
+        return questionDAO.selectById(id);
+    }
+
+
     public int addQuestion(Question question) {
         questionDAO.addQuestion(question);//如果提交成功会返回大于零
 

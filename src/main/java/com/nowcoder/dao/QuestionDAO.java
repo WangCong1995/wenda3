@@ -19,6 +19,9 @@ public interface QuestionDAO {
             ") values (#{title},#{content},#{createdDate},#{userId},#{commentCount})"})
     int addQuestion(Question question);//#{createdDate}是Question对象的createdDate属性。对应question表的created_date列
 
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where id=#{id}"})
+    Question selectById(int id);
+
     //查询最新的几个。注意:selectLatestQuestions函数 要配置到 QuestionDAO.xml中.
     List<Question> selectLatestQuestions(@Param("userId") int userId, @Param("offset") int offset,
                                          @Param("limit") int limit);//这3个@Param参数 与 QuestionDAO.xml中#{userId}，#{offset},#{limit}3个参数，一一匹配
