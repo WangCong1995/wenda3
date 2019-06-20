@@ -26,4 +26,6 @@ public interface QuestionDAO {
     List<Question> selectLatestQuestions(@Param("userId") int userId, @Param("offset") int offset,
                                          @Param("limit") int limit);//这3个@Param参数 与 QuestionDAO.xml中#{userId}，#{offset},#{limit}3个参数，一一匹配
 
+    @Update({"update ",TABLE_NAME," set comment_count = #{commentCount} where id=#{id}"})
+    int updateCommentCount(@Param("id") int id,@Param("commentCount") int commentCount);
 }

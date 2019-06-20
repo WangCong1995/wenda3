@@ -1,7 +1,7 @@
 package com.nowcoder.controller;
 
-import com.nowcoder.model.HostHolder;
-import com.nowcoder.model.Question;
+import com.nowcoder.model.*;
+import com.nowcoder.service.CommentService;
 import com.nowcoder.service.QuestionService;
 import com.nowcoder.service.UserService;
 import com.nowcoder.util.WendaUtil;
@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class QuestionController {
@@ -26,6 +28,9 @@ public class QuestionController {
 
     @Autowired
     HostHolder hostHolder;  //可以从中直接取到当前登录的用户
+
+    @Autowired
+    CommentService commentService;
 
 
 
@@ -76,7 +81,20 @@ public class QuestionController {
         model.addAttribute("question",question);
         model.addAttribute("user",question.getUserId());//还要把用户加上，问题是和用户相关的。
 
-        return "detail.html";
+        //与这个question相关的评论的信息，也需要在这里传到前端页面
+        //不仅需要评论的信息，还需要评论人的用户名、用户头像等 用户信息
+        //ViewObject 包含里面所有的东西，将所需的信息整合起来
+        List<Comment> commentList=commentService.getCommentsByEntity(qid, EntityType.ENTITY_QUESTION);//查出这个问题下，所有的评论
+        List<ViewObject> comments=new ArrayList<ViewObject>();
+        for (Comment comment:commentList){
+            ViewObject vo=new ViewObject();
+            vo.set("comment",comment);
+            vo.set("user",userService.getUser(comment.getUserId()));    //用户信息
+            comments.add(vo);
+        }
+        model.addAttribute("comments",comments);    //将整合的与评论相关的信息，传到前端页面
+
+        return "detail";    //跳转到 detail.html
     }
 
 }

@@ -25,6 +25,14 @@ public class UserService {
     private LoginTicketDAO loginTicketDAO;//依赖注入LoginTicketDAO的对象
 
 
+    /**
+     * 根据用户名查找用户
+     */
+    public User selectByName(String name) {
+        return userDAO.selectByName(name);
+    }
+
+
     //用户注册。返回值Map<String,String>的原因是：返回会有各种各样的属性，比如说“用户名已被注册”或者是其他的情况 就把各种字段写在这个map里。如果注册成功，则直接返回一个空，注册成功之后一般还会有一个登录的功能。
     public Map<String, String> register(String username, String password) {
         Map<String, String> map = new HashMap<String, String>();
@@ -121,10 +129,15 @@ public class UserService {
         return loginTicket.getTicket();
     }
 
+    //查询用户的接口
     public User getUser(int id) {
         return userDAO.selectById(id);
-    }//查询用户的接口
+    }
 
+    /**
+     * 用户登出，只需要让ticket失效
+     * @param ticket
+     */
     public void logout(String ticket) {
         loginTicketDAO.updateStatus(ticket, 1);//让ticket失效，把它的状态改成1
     }

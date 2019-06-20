@@ -338,7 +338,7 @@ public class MultiThreadTest {
         //testExecutor();
         //testWithoutAtomic();//打印出的数字是乱序的
         //testWithAtomic();
-        testFuture();
+        //testFuture();
     }
 
 }

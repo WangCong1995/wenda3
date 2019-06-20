@@ -77,7 +77,7 @@
                  data-widget="navigable" data-navigable-options="{&quot;items&quot;: &quot;&gt;.zm-item-answer&quot;}"
                  data-init="{&quot;params&quot;: {&quot;url_token&quot;: 36301524, &quot;pagesize&quot;: 10, &quot;offset&quot;: 0}, &quot;nodename&quot;: &quot;QuestionAnswerListV2&quot;}">
 
-                #foreach($comment in $comments)
+                #foreach($comment in $comments)   <!--comments是从QuestionController.java传过来的List<ViewObject> -->
                 <div tabindex="-1" class="zm-item-answer  zm-item-expanded" itemprop="topAnswer" itemscope=""
                      itemtype="http://schema.org/Answer" data-aid="22162611" data-atoken="66862039" data-collapsed="0"
                      data-created="1444310527" data-deleted="0" data-helpful="1" data-isowner="0" data-copyable="1"
@@ -100,8 +100,8 @@
                             <a class="zm-item-link-avatar avatar-link" href="" target="_blank"
                                data-tip="p$t$yingxiaodao">
                                 <img src="$comment.user.headUrl"
-                                     class="zm-list-avatar avatar"></a>
-                            <a class="author-link" target="_blank" href="/user/$comment.user.id">$comment.user.name</a>
+                                     class="zm-list-avatar avatar"></a> <!--用户头像-->
+                            <a class="author-link" target="_blank" href="/user/$comment.user.id">$comment.user.name</a> <!--用户名-->
                             </div>
                         <div class="zm-item-vote-info" data-votecount="28" data-za-module="VoteInfo">
                                 <span class="voters text">
