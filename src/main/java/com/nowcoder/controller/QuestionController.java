@@ -2,6 +2,7 @@ package com.nowcoder.controller;
 
 import com.nowcoder.model.*;
 import com.nowcoder.service.CommentService;
+import com.nowcoder.service.LikeService;
 import com.nowcoder.service.QuestionService;
 import com.nowcoder.service.UserService;
 import com.nowcoder.util.WendaUtil;
@@ -31,6 +32,9 @@ public class QuestionController {
 
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    LikeService likeService;
 
 
 
@@ -75,11 +79,11 @@ public class QuestionController {
     }
 
 
-    @RequestMapping(value = "/question/{qid}")
-    public  String questionDetail(Model model, @PathVariable("qid") int qid){
+    @RequestMapping(value = "/question/{qid}", method = {RequestMethod.GET})
+    public String questionDetail(Model model, @PathVariable("qid") int qid) {
         Question question=questionService.selectById(qid);
         model.addAttribute("question",question);
-        model.addAttribute("user",question.getUserId());//还要把用户加上，问题是和用户相关的。
+        //model.addAttribute("user",question.getUserId());//还要把用户加上，问题是和用户相关的。
 
         //与这个question相关的评论的信息，也需要在这里传到前端页面
         //不仅需要评论的信息，还需要评论人的用户名、用户头像等 用户信息
@@ -89,6 +93,15 @@ public class QuestionController {
         for (Comment comment:commentList){
             ViewObject vo=new ViewObject();
             vo.set("comment",comment);
+
+            /*判断当前用户是否点赞了这个评论*/
+            if (hostHolder.getUser() == null) {
+                vo.set("liked", 0);
+            } else {
+                vo.set("liked", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_COMMENT, comment.getId()));
+            }
+
+            vo.set("likeCount",likeService.getLikeCount(EntityType.ENTITY_COMMENT,comment.getId()));
             vo.set("user",userService.getUser(comment.getUserId()));    //用户信息
             comments.add(vo);
         }

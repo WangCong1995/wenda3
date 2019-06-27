@@ -24,6 +24,15 @@ public interface CommentDAO {
     int addComment(Comment comment);
 
 
+    /**
+     * 根据id直接从数据库里面查一条评论
+     * @param id
+     * @return
+     */
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME,
+            " where id=#{id}"})
+    Comment getCommentById(int id);
+
 
 
     /**

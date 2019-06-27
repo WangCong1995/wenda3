@@ -40,4 +40,13 @@ public class CommentService {
     public boolean deleteComment(int commentId) {
         return commentDAO.updateStatus(commentId, 1) >0;//删除成功，返回true
     }
+
+    /**
+     * 根据id获取到一条评论
+     * @param id
+     * @return
+     */
+    public Comment getCommentById(int id){
+        return commentDAO.getCommentById(id);
+    }
 }
