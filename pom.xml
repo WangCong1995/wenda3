@@ -53,6 +53,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>  <!-- 1.MYSQL的连接的jar包-->
 			<scope>runtime</scope>
@@ -67,6 +73,8 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
 	</dependencies>
 	
 	<build>

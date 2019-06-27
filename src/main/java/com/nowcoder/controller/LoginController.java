@@ -1,5 +1,8 @@
 package com.nowcoder.controller;
 
+import com.nowcoder.async.EventModel;
+import com.nowcoder.async.EventProducer;
+import com.nowcoder.async.EventType;
 import com.nowcoder.model.User;
 import com.nowcoder.service.UserService;
 import org.apache.commons.lang.StringUtils;
@@ -21,8 +24,12 @@ import java.util.Map;
 public class LoginController {
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+
     @Autowired
     UserService userService;
+
+    @Autowired
+    EventProducer eventProducer;//用来发事件的
 
 
     @RequestMapping(path = {"/reg/"}, method = {RequestMethod.POST})    //注册请求一般是POST，它是写入数据的
@@ -71,13 +78,19 @@ public class LoginController {
 
          try {
             //map什么都没有，说明登录条件都通过了。如果前面带有“msg”说明肯定出问题了
-            Map<String, String> map = userService.login(username, password);//【第一步】去验证用户名和密码
+            Map<String, Object> map = userService.login(username, password);//【第一步】去验证用户名和密码
 
             if (map.containsKey("ticket")) { //如果map中包含有“ticket”这样的key，说明登录成功
                 //【第三步】将这个ticker下发给客户端
-                Cookie cookie=new Cookie("ticket",map.get("ticket"));
+                Cookie cookie=new Cookie("ticket",map.get("ticket").toString());
                 cookie.setPath("/");
                 response.addCookie(cookie); //【第四步】需要把这个cookie放到我们的response里面
+
+                /*每次用户在登录完以后，都发一个登录事件到队列里，让对应的Handler去判断，是否发送登路异常的邮件给用户*/
+                //注意：Ext字段里面"email"里面，保存着收件人的邮箱
+                eventProducer.fireEvent(new EventModel(EventType.LOGIN)
+                        .setExt("username", username).setExt("email", "3435312113@qq.com")
+                        .setActorId((int)map.get("userId")));//注意：这里的setActorId()其实没用上。这里的字段应该按需要设置
 
                 if(StringUtils.isNotBlank(next)){  //登录的事情做完以后，发现有个待跳转的地址，于是就跳转到next所代表的页面。就不跳转到首页了
                     return "redirect:"+next;

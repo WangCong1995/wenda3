@@ -71,8 +71,8 @@ public class UserService {
     }
 
     //登录
-    public Map<String, String> login(String username, String password) {
-        Map<String, String> map = new HashMap<String, String>();
+    public Map<String, Object> login(String username, String password) {
+        Map<String, Object> map = new HashMap<String, Object>();
 
         //StringUtils是apache提供的工具类
         if (StringUtils.isBlank(username)) {  //判断是否为空。注意：  字符串"    "   也是空
@@ -101,6 +101,7 @@ public class UserService {
         //【第二步】用户名和密码验证成功，然后后台生成一个ticket，记录这个ticket和这个用户是关联的，然后存入数据库中
         String ticket=addLoginTicket(user.getId());//将userId与ticket关联起来，并将这个ticket存入数据库中。这个ticket最终还是要下发给浏览器的
         map.put("ticket",ticket);//先把这个ticket放入map中，传到LoginController中去
+        map.put("userId", user.getId());
         //怎么将ticket下发到cookie呢？通过LoginController里面的 HttpServletResponse来下发的。
 
         return map;     //用户名和密码验证成功，直接return一个map
