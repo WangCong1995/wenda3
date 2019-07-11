@@ -34,6 +34,11 @@ public class CommentService {
         return commentDAO.getCommentCount(entityId, entityType);
     }
 
+    public int getUserCommentCount(int userId) {
+        return commentDAO.getUserCommentCount(userId);
+    }
+
+
     /**
      * 删除一条评论。但实际上是在数据库表中修改评论的状态
      */

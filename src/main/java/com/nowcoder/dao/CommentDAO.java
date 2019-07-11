@@ -45,6 +45,14 @@ public interface CommentDAO {
             " where entity_id=#{entityId} and entity_type=#{entityType} order by id desc"})
     List<Comment> selectByEntity(@Param("entityId") int entityId, @Param("entityType") int entityType);
 
+    /**
+     * 某一个用户有多少条评论
+     * @param userId
+     * @return
+     */
+    @Select({"select count(id) from ", TABLE_NAME, " where user_id=#{userId}"})
+    int getUserCommentCount(int userId);
+
 
     /**
      * 筛选某一个实体下面,现在有多少条评论

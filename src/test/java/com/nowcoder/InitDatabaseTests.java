@@ -2,8 +2,11 @@ package com.nowcoder;
 
 import com.nowcoder.dao.QuestionDAO;
 import com.nowcoder.dao.UserDAO;
+import com.nowcoder.model.EntityType;
 import com.nowcoder.model.Question;
 import com.nowcoder.model.User;
+import com.nowcoder.service.FollowService;
+import com.nowcoder.util.JedisAdapter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +29,12 @@ public class InitDatabaseTests {
     @Autowired
     QuestionDAO questionDAO;//依赖注入一个QuestionDAO对象，不用自己去new了
 
+    @Autowired
+    FollowService followService;
+
+    @Autowired
+    JedisAdapter jedisAdapter;
+
     @Test
     public void contextLoads() {
         Random random = new Random();
@@ -36,6 +45,11 @@ public class InitDatabaseTests {
             user.setPassword("");
             user.setSalt("");
             userDAO.addUser(user);
+
+            //创建用户的时候，就让他们先关注上。让前面的所有用户，都关注新创建的用户
+            for (int j = 1; j < i; ++j) {
+                followService.follow(j, EntityType.ENTITY_USER, i);
+            }
 
             user.setPassword("newpassword");
             userDAO.updatePassword(user);//更新了密码

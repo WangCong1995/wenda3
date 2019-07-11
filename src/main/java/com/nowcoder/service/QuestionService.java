@@ -20,6 +20,10 @@ public class QuestionService {
     @Autowired
     SensitiveService sensitiveService;
 
+    public Question getById(int id) {
+        return questionDAO.getById(id);
+    }
+
     public Question selectById(int id){
         return questionDAO.selectById(id);
     }

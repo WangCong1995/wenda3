@@ -8,12 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.BinaryClient;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Tuple;
+import redis.clients.jedis.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 通过JedisAdapter来对Jedis的操作来做一些包装
@@ -117,7 +116,7 @@ public class JedisAdapter implements InitializingBean {
         print(29, jedis.srandmember(likeKey1,2));//从集合中，随机取2个元素出来
 
 
-        //优先队列（在Redis里面称为：依据分值排序的集合 Sorted Sets）。
+        //【优先队列】（在Redis里面称为：依据分值排序的集合 Sorted Sets）。
         // 优先队列有优先级的概念。优先队列是根据score来的
         //适用于排序Sorted Set
         String rankKey = "rankKey";
@@ -192,6 +191,18 @@ public class JedisAdapter implements InitializingBean {
         User user2 = JSON.parseObject(value, User.class);//将Json串，反序列化为对象
         print(47, user2);
         int k = 2;
+
+        try {
+            Transaction tx = jedis.multi();
+            tx.zadd("qq", 2, "1");//有返回值
+            tx.zadd("qq2", 3, "2");//也有返回值
+            List<Object> objs = tx.exec();//执行之后，会返回一个List<Object>的返回值(即List中的每一个Object，对应着事务中每一条命令的返回值)
+            tx.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+        }
+
     }
 
 
@@ -316,5 +327,184 @@ public class JedisAdapter implements InitializingBean {
             }
         }
         return 0;
+    }
+
+
+
+
+    public List<String> lrange(String key, int start, int end) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.lrange(key, start, end);
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
+
+
+
+    /**
+     * 从连接池中，获取一个Jedis连接
+     */
+    public Jedis getJedis() {
+        return pool.getResource();
+    }
+
+    /**
+     * 开启一个事务
+     * @param jedis
+     * @return
+     */
+    public Transaction multi(Jedis jedis) {
+        try {
+            return jedis.multi();
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+        }
+        return null;
+    }
+
+    /**
+     * 执行事务，并关闭连接。（List中的每一个Object，对应着 事务中每一条命令的返回值）
+     * @param tx
+     * @param jedis
+     * @return
+     */
+    public List<Object> exec(Transaction tx, Jedis jedis) {
+        try {
+            return tx.exec();//执行事务，并将执行结果返回。
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+            tx.discard();
+        } finally {
+            if (tx != null) {
+                try {
+                    tx.close();//关掉事务
+                } catch (IOException ioe) {
+                    logger.error("发生异常" + ioe.getMessage());
+                }
+            }
+
+            if (jedis != null) {
+                jedis.close();//把Jedis关掉
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 往zset中添加一个值
+     * @param key 标识zset
+     * @param score
+     * @param value
+     * @return
+     */
+    public long zadd(String key, double score, String value) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zadd(key, score, value);
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 从zset中删除一个值
+     * @param key 标识zset
+     * @param value
+     * @return
+     */
+    public long zrem(String key, String value) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zrem(key, value);
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return 0;
+    }
+
+
+
+    public Set<String> zrange(String key, int start, int end) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zrange(key, start, end);//升序排序
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
+    //返回是一个集合Set
+    public Set<String> zrevrange(String key, int start, int end) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zrevrange(key, start, end);//降序排序
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
+    //统计队列里面有多少个元素
+    public long zcard(String key) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zcard(key);
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return 0;
+    }
+
+    public Double zscore(String key, String member) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zscore(key, member);//在key这个优先队列中，查一下member的score
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
     }
 }

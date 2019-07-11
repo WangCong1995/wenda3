@@ -36,6 +36,21 @@ public class WendaUtil {
         return json.toJSONString();//json对象 直接转换成了string
     }
 
+    /**
+     * 重载的生成Json串的工具
+     * @param code
+     * @param map
+     * @return
+     */
+    public static String getJSONString(int code, Map<String, Object> map) {
+        JSONObject json = new JSONObject();
+        json.put("code", code);
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            json.put(entry.getKey(), entry.getValue());
+        }
+        return json.toJSONString();
+    }
+
     /* 将字符串用MD5算法加密 */
     public static String MD5(String key) {
         char hexDigits[] = {

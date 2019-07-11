@@ -35,7 +35,7 @@ public class EventConsumer implements InitializingBean,ApplicationContextAware{
      * 下次Event进来的时候，就可以根据EventType，找出与这个EventType关联的List<EventHandler>，然后就可以一个一个的执行这些Handler了
      * 【注意：我们在下面的afterPropertiesSet()方法中，已经将EventType和Handler关联到config中了，下次再由event进来的时候，就能找到这个event对应的handler】
      */
-    private Map<EventType,List<EventHandler>> config=new HashMap<EventType,List<EventHandler>>();
+    private Map<EventType,List<EventHandler>> config=new HashMap<EventType,List<EventHandler>>();//将某事件，与所有对这个事件感兴趣的处理器关联起来、
 
     //上下文
     private ApplicationContext applicationContext;
